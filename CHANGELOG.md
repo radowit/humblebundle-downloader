@@ -1,5 +1,7 @@
 # Change log
 
+### 0.5.0
+- Use poetry and upgrade to Python 3.12
 
 ### 0.4.0
 - Deprecate the `download` argument. It is no longer needed since that is the only action that can be taken
