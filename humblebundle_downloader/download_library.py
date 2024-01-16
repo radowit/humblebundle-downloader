@@ -49,11 +49,11 @@ class DownloadLibrary:
                 self.session.cookies = cookie_jar
             except http.cookiejar.LoadError:
                 # Still support the original cookie method
-                with open(cookie_path, 'r') as f:
+                with open(cookie_path) as f:
                     self.session.headers.update({'cookie': f.read().strip()})
         elif cookie_auth:
             self.session.headers.update(
-                {'cookie': '_simpleauth_sess={}'.format(cookie_auth)}
+                {'cookie': f'_simpleauth_sess={cookie_auth}'}
             )
 
     def start(self):
@@ -85,12 +85,12 @@ class DownloadLibrary:
                          .format(title=web_name))
             return None
 
-        logger.debug("Signed url response {sign_r}".format(sign_r=sign_r))
+        logger.debug(f"Signed url response {sign_r}")
         if sign_r.json().get('_errors') == 'Unauthorized':
             logger.critical("Your account does not have access to the Trove")
             sys.exit()
         signed_url = sign_r.json()['signed_url']
-        logger.debug("Signed url {signed_url}".format(signed_url=signed_url))
+        logger.debug(f"Signed url {signed_url}")
         return signed_url
 
     def _process_trove_product(self, title, product):
@@ -112,7 +112,7 @@ class DownloadLibrary:
                             .format(web_name=web_name))
                 continue
 
-            cache_file_key = 'trove:{name}'.format(name=web_name)
+            cache_file_key = f'trove:{web_name}'
             file_info = {
                 'uploaded_at': (download.get('uploaded_at')
                                 or download.get('timestamp')
@@ -193,7 +193,7 @@ class DownloadLibrary:
         return trove_products
 
     def _process_order_id(self, order_id):
-        order_url = 'https://www.humblebundle.com/api/v1/order/{order_id}?all_tpkds=true'.format(order_id=order_id)  # noqa: E501
+        order_url = f'https://www.humblebundle.com/api/v1/order/{order_id}?all_tpkds=true'  # noqa: E501
         try:
             order_r = self.session.get(
                 order_url,
@@ -207,7 +207,7 @@ class DownloadLibrary:
                          .format(order_id=order_id))
             return
 
-        logger.debug("Order request: {order_r}".format(order_r=order_r))
+        logger.debug(f"Order request: {order_r}")
         order = order_r.json()
         bundle_title = _clean_name(order['product']['human_name'])
         logger.info("Checking bundle: " + str(bundle_title))
@@ -271,7 +271,7 @@ class DownloadLibrary:
                 try:
                     product_r = self.session.get(url, stream=True)
                 except Exception:
-                    logger.error("Failed to download {url}".format(url=url))
+                    logger.error(f"Failed to download {url}")
                     continue
 
                 # Check to see if the file still exists
@@ -376,7 +376,7 @@ class DownloadLibrary:
 
     def _load_cache_data(self, cache_file):
         try:
-            with open(cache_file, 'r') as f:
+            with open(cache_file) as f:
                 cache_data = json.load(f)
         except FileNotFoundError:
             cache_data = {}

@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "humblebundle-downloader"
+version = "0.5.0"
+description = "Download you Humble Bundle Library"
+authors = [
+    "Dr. Galambos Máté <thermate18@gmail.com>",
+    "Eddy Hintze <eddy@hintze.co>",
+    "Radosław Ganczarek <radoslaw@ganczarek.in>",
+    "Teemu Rytilahti <tpr@iki.fi>",
+]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.31.0"
+parsel = "^1.8.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+hbd = 'humblebundle_downloader.cli:cli'
